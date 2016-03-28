@@ -71,7 +71,8 @@ extern "C" {
 #include "SDL_winrtapp_direct3d.h"
 
 // Löve includes
-#include "../../LöveFTW/lovefiletoopen.h"
+#include <cvt/wstring>
+#include <codecvt>
 
 #if SDL_VIDEO_RENDER_D3D11 && !SDL_RENDER_DISABLED
 /* Calling IDXGIDevice3::Trim on the active Direct3D 11.x device is necessary
@@ -417,7 +418,13 @@ void SDL_WinRTApp::Run()
         // TODO, WinRT: pass the C-style main() a reasonably realistic
         // representation of command line arguments.
         int argc = 0;
-        char **argv = NULL;
+		char **argv = NULL;
+
+		if (loveFileName != "") {
+			argc = 2;
+			argv = new char*[2] { "love.exe", loveFileName };
+		}
+
         WINRT_SDLAppEntryPoint(argc, argv);
     }
 }
@@ -664,7 +671,10 @@ void SDL_WinRTApp::OnAppActivated(CoreApplicationView^ applicationView, IActivat
 		auto item = fileArgs->Files->GetAt(0);
 		auto name = item->Path;
 
-		lovefiletoopen::name = name;
+		stdext::cvt::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
+		std::string stringUtf8 = convert.to_bytes(name->Data());
+		const char* rawCstring = stringUtf8.c_str();
+		loveFileName = _strdup(rawCstring);
 	}
 
     CoreWindow::GetForCurrentThread()->Activate();

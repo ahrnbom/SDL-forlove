@@ -83,6 +83,8 @@ protected:
 private:
     bool m_windowClosed;
     bool m_windowVisible;
+
+	char* loveFileName = "";
 };
 
 extern SDL_WinRTApp ^ SDL_WinRTGlobalApp;
