@@ -70,6 +70,9 @@ extern "C" {
 #include "SDL_winrtapp_common.h"
 #include "SDL_winrtapp_direct3d.h"
 
+// Löve includes
+#include "../../LöveFTW/lovefiletoopen.h"
+
 #if SDL_VIDEO_RENDER_D3D11 && !SDL_RENDER_DISABLED
 /* Calling IDXGIDevice3::Trim on the active Direct3D 11.x device is necessary
  * when Windows 8.1 apps are about to get suspended.
@@ -655,6 +658,15 @@ void SDL_WinRTApp::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
 
 void SDL_WinRTApp::OnAppActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
 {
+	auto kind = args->Kind;
+	if (kind == Windows::ApplicationModel::Activation::ActivationKind::File) {
+		Windows::ApplicationModel::Activation::FileActivatedEventArgs^ fileArgs = (Windows::ApplicationModel::Activation::FileActivatedEventArgs^)args;
+		auto item = fileArgs->Files->GetAt(0);
+		auto name = item->Path;
+
+		lovefiletoopen::name = name;
+	}
+
     CoreWindow::GetForCurrentThread()->Activate();
 }
 
