@@ -669,15 +669,22 @@ void SDL_WinRTApp::OnAppActivated(CoreApplicationView^ applicationView, IActivat
 	if (kind == Windows::ApplicationModel::Activation::ActivationKind::File) {
 		Windows::ApplicationModel::Activation::FileActivatedEventArgs^ fileArgs = (Windows::ApplicationModel::Activation::FileActivatedEventArgs^)args;
 		auto item = fileArgs->Files->GetAt(0);
-		auto name = item->Path;
+		Windows::Storage::StorageFile^ file = (Windows::Storage::StorageFile^)item;
 
+		Platform::String^ name = "game.love";
+		file->CopyAsync((Windows::Storage::IStorageFolder^)Windows::Storage::ApplicationData::Current->LocalFolder, name, Windows::Storage::NameCollisionOption::ReplaceExisting);
+
+		Platform::String^ fullPath = Windows::Storage::ApplicationData::Current->LocalFolder->Path + "\\" + name;
+		
 		stdext::cvt::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
-		std::string stringUtf8 = convert.to_bytes(name->Data());
+		std::string stringUtf8 = convert.to_bytes(fullPath->Data());
+
 		const char* rawCstring = stringUtf8.c_str();
+
 		loveFileName = _strdup(rawCstring);
 	}
 
-    CoreWindow::GetForCurrentThread()->Activate();
+	CoreWindow::GetForCurrentThread()->Activate();
 }
 
 void SDL_WinRTApp::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
