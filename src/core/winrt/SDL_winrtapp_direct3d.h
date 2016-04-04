@@ -84,7 +84,7 @@ private:
     bool m_windowClosed;
     bool m_windowVisible;
 
-	char* loveFileName = "";
+	char* loveFileName = "game.love";
 };
 
 extern SDL_WinRTApp ^ SDL_WinRTGlobalApp;

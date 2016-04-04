@@ -417,14 +417,9 @@ void SDL_WinRTApp::Run()
     {
         // TODO, WinRT: pass the C-style main() a reasonably realistic
         // representation of command line arguments.
-        int argc = 0;
-		char **argv = NULL;
-
-		if (loveFileName != "") {
-			argc = 2;
-			argv = new char*[2] { "love.exe", loveFileName };
-		}
-
+        int argc = 2;
+		char **argv = new char*[2]{ "love.exe", loveFileName };
+		
         WINRT_SDLAppEntryPoint(argc, argv);
     }
 }
